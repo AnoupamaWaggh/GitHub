@@ -1,0 +1,86 @@
+Create Database ContactInfoDB
+Go
+
+Use ContactInfoDB
+Go
+
+Create table tblContactInfo
+(
+     ID int primary key identity,
+     FirstName nvarchar(50),
+     LastName nvarchar(50),
+	 Email nvarchar(50),
+	 PhoneNumber nvarchar(30),
+	 [Status] nvarchar(10)
+)
+Go
+
+Insert into tblContactInfo values ('Mark', 'Hastings', 'Mark@test.com', 1234567890, 'Active')
+Insert into tblContactInfo values ('Steve', 'Pound', 'Steve@test.com', 1234567890, 'InActive')
+Insert into tblContactInfo values ('Ben', 'Hoskins', 'Ben@test.com', 1234567890, 'Active')
+Insert into tblContactInfo values ('Philip', 'Hastings', 'Philip@test.com', 1234567890, 'Active')
+Insert into tblContactInfo values ('Mary', 'Lambeth', 'Mary@test.com', 1234567890, 'InActive')
+Insert into tblContactInfo values ('Valarie', 'Vikings', 'Valarie@test.com', 1234567890, 'Active')
+Insert into tblContactInfo values ('John', 'Stanmore', 'John@test.com', 1234567890, 'Active')
+Go
+
+
+Create procedure spGetAllContacts
+as
+Begin
+	select Id, FirstName, LastName, Email, PhoneNumber, [Status]
+	from tblContactInfo
+End
+
+
+Create Procedure spAddContact
+@FirstName nvarchar(50),
+@LastName nvarchar(50),
+@Email nvarchar(50),
+@PhoneNumber nvarchar(30),
+@Status nvarchar(10)
+as
+Begin
+	Insert into tblContactInfo (FirstName, LastName,Email,PhoneNumber,[Status])
+	Values (@FirstName, @LastName, @Email, @PhoneNumber, @Status)
+End
+
+
+ALTER Procedure [dbo].[spAddContact]
+@FirstName nvarchar(50),
+@LastName nvarchar(50),
+@Email nvarchar(50),
+@PhoneNumber nvarchar(30),
+@Status nvarchar(10),
+@Id int output
+as
+Begin
+	SET NOCOUNT ON;
+	Insert into tblContactInfo (FirstName, LastName,Email,PhoneNumber,[Status])
+	Values (@FirstName, @LastName, @Email, @PhoneNumber, @Status)
+	SET @Id = SCOPE_IDENTITY()
+	RETURN  @id
+End
+
+
+Create procedure spSaveContact
+@Id int,
+@FirstName nvarchar(50),
+@LastName nvarchar(50),
+@Email nvarchar(50),
+@PhoneNumber nvarchar(30),
+@Status nvarchar(10)
+as
+Begin
+	update tblContactInfo Set FirstName=@FirstName, LastName=@LastName,Email=@Email,PhoneNumber=@PhoneNumber,[Status]=@Status
+	where Id=@Id
+End
+
+
+Create procedure spDeleteContact
+@id int
+as
+Begin
+	Delete from tblContactInfo
+	where id=@id
+End
